@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "npm run build",
     "build": "babel src --out-dir lib",
-    "dev":"babel src --out-dir test --plugins transform-es2015-modules-umd"
+    "dev":
+      "babel src --out-dir test --watch --plugins transform-es2015-modules-umd"
   },
   "author": "d-dog@d-dog.se",
   "license": "MIT",

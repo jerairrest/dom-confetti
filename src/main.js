@@ -1,24 +1,29 @@
-const defaultColors = [
-  '#a864fd',
-  '#29cdff',
-  '#78ff44',
-  '#ff718d',
-  '#fdff6a'
-];
-
 function createElements(root, elementCount, colors) {
-  return Array
-    .from({ length: elementCount })
-    .map((_, index) => {
-      const element = document.createElement('div');
-      const color = colors[index % colors.length];
-      element.style['background-color']= color; // eslint-disable-line space-infix-ops
-      element.style.width = '10px';
-      element.style.height = '10px';
-      element.style.position = 'absolute';
-      root.appendChild(element);
-      return element;
-    });
+  return Array.from({ length: elementCount }).map((_, index) => {
+    const element = document.createElement('div');
+    const color = '#6FCF97';
+    element.style['background-color'] = color; // eslint-disable-line space-infix-ops
+    element.style.width = '20px';
+    element.style.height = '10px';
+    element.style.position = 'absolute';
+    element.style.border = '1px solid rgba(0,0,0,.25)';
+
+    const innerElement = document.createElement('div');
+    innerElement.style.display = 'block';
+    innerElement.style.width = '5px';
+    innerElement.style.height = '5px';
+    innerElement.style['border-radius'] = '50%';
+    innerElement.style.background = 'rgba(255,255,255,0.45)';
+    innerElement.style.position = 'absolute';
+    innerElement.style.top = '50%';
+    innerElement.style.left = '50%';
+    innerElement.style.transform = 'translate(-50%,-50%)';
+
+    element.appendChild(innerElement);
+
+    root.appendChild(element);
+    return element;
+  });
 }
 
 function randomPhysics(angle, spread, startVelocity) {
@@ -28,10 +33,10 @@ function randomPhysics(angle, spread, startVelocity) {
     x: 0,
     y: 0,
     wobble: Math.random() * 10,
-    velocity: (startVelocity * 0.5) + (Math.random() * startVelocity),
-    angle2D: -radAngle + ((0.5 * radSpread) - (Math.random() * radSpread)),
-    angle3D: -(Math.PI / 4) + (Math.random() * (Math.PI / 2)),
-    tiltAngle: Math.random() * Math.PI
+    velocity: startVelocity * 0.5 + Math.random() * startVelocity,
+    angle2D: -radAngle + (0.5 * radSpread - Math.random() * radSpread),
+    angle3D: -(Math.PI / 4) + Math.random() * (Math.PI / 2),
+    tiltAngle: Math.random() * Math.PI,
   };
 }
 
@@ -46,8 +51,8 @@ function updateFetti(fetti, progress, decay) {
   fetti.physics.tiltAngle += 0.1;
 
   const { x, y, tiltAngle, wobble } = fetti.physics;
-  const wobbleX = x + (10 * Math.cos(wobble));
-  const wobbleY = y + (10 * Math.sin(wobble));
+  const wobbleX = x + 10 * Math.cos(wobble);
+  const wobbleY = y + 10 * Math.sin(wobble);
   const transform = `translate3d(${wobbleX}px, ${wobbleY}px, 0) rotate3d(1, 1, 1, ${tiltAngle}rad)`;
 
   fetti.element.style.transform = transform;
@@ -61,31 +66,33 @@ function animate(root, fettis, decay) {
   let tick = 0;
 
   function update() {
-    fettis.forEach((fetti) => updateFetti(fetti, tick / totalTicks, decay));
+    fettis.forEach(fetti => updateFetti(fetti, tick / totalTicks, decay));
 
     tick += 1;
     if (tick < totalTicks) {
       requestAnimationFrame(update);
     } else {
-      fettis.forEach((fetti) => root.removeChild(fetti.element));
+      fettis.forEach(fetti => root.removeChild(fetti.element));
     }
   }
 
   requestAnimationFrame(update);
 }
 
-export function confetti(root, {
+export function confetti(
+  root,
+  {
     angle = 90,
     decay = 0.9,
     spread = 45,
     startVelocity = 45,
     elementCount = 50,
-    colors = defaultColors
-  } = {}) {
-  const elements = createElements(root, elementCount, colors);
-  const fettis = elements.map((element) => ({
+  } = {}
+) {
+  const elements = createElements(root, elementCount);
+  const fettis = elements.map(element => ({
     element,
-    physics: randomPhysics(angle, spread, startVelocity)
+    physics: randomPhysics(angle, spread, startVelocity),
   }));
 
   animate(root, fettis, decay);
