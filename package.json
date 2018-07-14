@@ -1,7 +1,7 @@
 {
-  "name": "dom-confetti",
-  "version": "0.0.8",
-  "description": "confetti with dom elements",
+  "name": "fat-stacks.js",
+  "version": "1.0.0",
+  "description": "fat-stacks for all!!",
   "main": "lib/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
